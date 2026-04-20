@@ -9,11 +9,17 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
 
-    # Launch arguments 
+    # Launch arguments
     rviz_arg = DeclareLaunchArgument(
         'rviz',
         default_value='false',
         description='Launch RViz2 for visualization'
+    )
+
+    input_topic_arg = DeclareLaunchArgument(
+        'input_topic',
+        default_value='/points',
+        description='PointCloud2 topic to subscribe to'
     )
 
     # Paths
@@ -27,7 +33,8 @@ def generate_launch_description():
         executable='odometry_node',
         name='lidar_odometry_node',
         output='screen',
-        parameters=[params_file]
+        parameters=[params_file],
+        remappings=[('points', LaunchConfiguration('input_topic'))]
     )
 
     # RViz2 node (only launched if rviz:=true)
@@ -41,6 +48,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         rviz_arg,
+        input_topic_arg,
         odometry_node,
         rviz_node,
     ])
