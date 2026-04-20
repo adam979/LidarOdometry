@@ -1,0 +1,32 @@
+lidar_odometry_node:
+  ros__parameters:
+
+    # ── Preprocessor ──────────────────────────────────────────────
+    # Remove points closer than this (metres) - avoids self-hits on robot body
+    min_range: 0.5
+
+    # Remove points farther than this (metres) - avoids noisy far returns
+    max_range: 50.0
+
+    # Remove points with intensity below this - avoids weak/unreliable returns
+    # Set to 0.0 to disable intensity filtering
+    intensity_threshold: 0.0
+
+    # Downsample to this many points before ICP (0 = no limit)
+    # Lower = faster ICP but less accurate. 5000 is a good balance.
+    max_points: 5000
+
+    # ── ICP ───────────────────────────────────────────────────────
+    # Maximum number of ICP iterations per scan pair
+    max_iterations: 50
+
+    # Maximum distance (metres) between matched point pairs
+    # Pairs farther than this are rejected as wrong matches
+    max_correspondence_dist: 1.0
+
+    # Stop iterating when transform change drops below this
+    convergence_tolerance: 0.0001
+
+    # ── Frames ────────────────────────────────────────────────────
+    odom_frame:  "odom"
+    robot_frame: "base_link"

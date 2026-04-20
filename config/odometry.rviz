@@ -1,0 +1,17 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Displays:
+    - Class: rviz_default_plugins/Axes
+      Name: Axes
+      Reference Frame: odom
+    - Class: rviz_default_plugins/Odometry
+      Name: Odometry
+      Topic: /odom
+      Keep: 10000
+    - Class: rviz_default_plugins/TF
+      Name: TF
+  Global Options:
+    Fixed Frame: odom
+  Name: root
