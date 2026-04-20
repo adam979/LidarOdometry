@@ -1,17 +1,98 @@
 Panels:
   - Class: rviz_common/Displays
     Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
 Visualization Manager:
+  Class: ""
   Displays:
+    - Class: rviz_default_plugins/Grid
+      Enabled: true
+      Name: Grid
+      Cell Size: 1
+      Plane Cell Count: 20
+      Color: 160; 160; 164
+      Value: true
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Name: TF
+      Show Axes: true
+      Show Names: true
+      Show Arrows: true
+      Value: true
     - Class: rviz_default_plugins/Axes
+      Enabled: true
       Name: Axes
       Reference Frame: odom
+      Length: 1
+      Radius: 0.05
+      Value: true
     - Class: rviz_default_plugins/Odometry
+      Enabled: true
       Name: Odometry
-      Topic: /odom
       Keep: 10000
-    - Class: rviz_default_plugins/TF
-      Name: TF
+      Position Tolerance: 0.01
+      Angle Tolerance: 0.01
+      Shape:
+        Alpha: 1
+        Color: 255; 25; 0
+        Head Length: 0.1
+        Head Radius: 0.05
+        Shaft Length: 0.3
+        Shaft Radius: 0.02
+      Covariance:
+        Value: false
+      Topic:
+        Depth: 100
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /odom
+      Value: true
+    - Class: rviz_default_plugins/PointCloud2
+      Enabled: true
+      Name: PointCloud2
+      Style: Points
+      Size (m): 0.03
+      Color Transformer: AxisColor
+      Axis: Z
+      Decay Time: 0
+      Use rainbow: true
+      Use Fixed Frame: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Best Effort
+        Value: /ouster/points
+      Value: true
   Global Options:
+    Background Color: 48; 48; 48
     Fixed Frame: odom
+    Frame Rate: 30
   Name: root
+  Tools:
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/FocusCamera
+  Value: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 30
+      Pitch: 0.5
+      Yaw: 0.785
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Target Frame: odom
+      Name: Current View
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 900
+  Width: 1600
+  Hide Left Dock: false
+  Hide Right Dock: false
