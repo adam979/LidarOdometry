@@ -46,6 +46,10 @@ ICPResult ICP::align(
     for (const auto & p : target)
         target_pts.push_back(p.toEigen());
 
+    // Build the kd-tree on the target cloud once per align() call — the target
+    // is fixed across ICP iterations, only the source moves.
+    target_tree_.build(target_pts);
+
     // Start with source points transformed by initial guess
     std::vector<Eigen::Vector3f> source_pts;
     source_pts.reserve(source.size());
@@ -62,7 +66,7 @@ ICPResult ICP::align(
         result.iterations = iter + 1;
 
         // find closest point pairs
-        auto correspondences = findCorrespondences(source_pts, target_pts);
+        auto correspondences = findCorrespondences(source_pts);
 
         if (correspondences.empty())
             break;
@@ -99,11 +103,10 @@ ICPResult ICP::align(
 }
 
 
-// Find nearest neighbour correspondences
+// Find nearest neighbour correspondences (KD-tree over target cloud).
 
 std::vector<std::pair<int,int>> ICP::findCorrespondences(
-    const std::vector<Eigen::Vector3f> & source_pts,
-    const std::vector<Eigen::Vector3f> & target_pts) const
+    const std::vector<Eigen::Vector3f> & source_pts) const
 {
     std::vector<std::pair<int,int>> correspondences;
     correspondences.reserve(source_pts.size());
@@ -113,20 +116,9 @@ std::vector<std::pair<int,int>> ICP::findCorrespondences(
 
     for (int i = 0; i < static_cast<int>(source_pts.size()); ++i)
     {
-        float best_dist_sq = std::numeric_limits<float>::max();
-        int   best_j       = -1;
+        float best_dist_sq = 0.0f;
+        const int best_j = target_tree_.nearest(source_pts[i], best_dist_sq);
 
-        for (int j = 0; j < static_cast<int>(target_pts.size()); ++j)
-        {
-            float dist_sq = (source_pts[i] - target_pts[j]).squaredNorm();
-            if (dist_sq < best_dist_sq)
-            {
-                best_dist_sq = dist_sq;
-                best_j       = j;
-            }
-        }
-
-        // Only keep correspondence if within max distance
         if (best_j >= 0 && best_dist_sq < max_dist_sq)
             correspondences.emplace_back(i, best_j);
     }

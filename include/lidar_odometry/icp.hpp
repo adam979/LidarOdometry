@@ -3,6 +3,7 @@
 #include <vector>
 #include <Eigen/Dense>
 #include "lidar_odometry/preprocessor.hpp"
+#include "lidar_odometry/kdtree.hpp"
 
 namespace lidar_odometry
 {
@@ -41,11 +42,13 @@ public:
 private:
     ICPConfig config_;
 
-    // for each source point find nearest target point
+    // KD-tree over the current target cloud. Rebuilt once per align() call.
+    KDTree target_tree_;
+
+    // for each source point find nearest target point via the kd-tree
     // Returns pairs of (source_idx, target_idx)
     std::vector<std::pair<int,int>> findCorrespondences(
-        const std::vector<Eigen::Vector3f> & source_pts,
-        const std::vector<Eigen::Vector3f> & target_pts) const;
+        const std::vector<Eigen::Vector3f> & source_pts) const;
 
     // compute optimal R and t from correspondences using SVD
     Eigen::Matrix4f computeTransform(

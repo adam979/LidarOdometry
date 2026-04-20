@@ -24,6 +24,7 @@ find_package(Eigen3 REQUIRED)
 add_library(lidar_odometry_core
   src/preprocessor.cpp
   src/icp.cpp
+  src/kdtree.cpp
 )
 
 target_include_directories(lidar_odometry_core PUBLIC
