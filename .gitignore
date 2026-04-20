@@ -1,0 +1,13 @@
+# tf2_tools output
+frames_*.gv
+frames_*.pdf
+
+# Stray ROS 2 build artifacts if someone builds inside the package
+build/
+install/
+log/
+
+# Editor
+*.swp
+.vscode/
+.idea/
