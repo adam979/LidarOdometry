@@ -5,6 +5,9 @@
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <sensor_msgs/point_cloud2_iterator.hpp>
 
+#include <fstream>
+#include <iomanip>
+
 #include "lidar_odometry/preprocessor.hpp"
 #include "lidar_odometry/icp.hpp"
 
@@ -30,12 +33,28 @@ public:
         this->declare_parameter("convergence_tolerance",    1e-4);
 
         // Frame names
-        this->declare_parameter("odom_frame",  std::string("odom"));
-        this->declare_parameter("robot_frame", std::string("base_link"));
+        this->declare_parameter("odom_frame", std::string("odom"));
+
+        // Trajectory dump (TUM format)
+        this->declare_parameter("dump_estimate", true);
+        this->declare_parameter("estimate_path", std::string("./estimate.txt"));
 
         // Build preprocessor and ICP from parameters
         preprocessor_ = std::make_unique<Preprocessor>(getPreprocessorConfig());
         icp_          = std::make_unique<ICP>(getICPConfig());
+
+        // Open estimate file if requested
+        if (this->get_parameter("dump_estimate").as_bool())
+        {
+            const std::string path = this->get_parameter("estimate_path").as_string();
+            estimate_file_.open(path);
+            if (!estimate_file_.is_open())
+                RCLCPP_ERROR(this->get_logger(),
+                    "Could not open estimate file '%s' — skipping dump.", path.c_str());
+            else
+                RCLCPP_INFO(this->get_logger(),
+                    "Writing TUM-format estimate to '%s'.", path.c_str());
+        }
 
         // Global pose starts at identity
         global_pose_ = Eigen::Matrix4f::Identity();
@@ -65,6 +84,7 @@ private:
     std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr cloud_sub_;
+    std::ofstream                              estimate_file_;
 
     std::vector<Point3D> previous_cloud_;
     Eigen::Matrix4f      global_pose_;      // accumulated world transform
@@ -214,6 +234,16 @@ private:
         odom_msg.pose.pose.orientation.w = q.w();
 
         odom_pub_->publish(odom_msg);
+
+        // TUM-format trajectory line: timestamp tx ty tz qx qy qz qw
+        if (estimate_file_.is_open())
+        {
+            estimate_file_ << std::fixed << std::setprecision(9)
+                << stamp.seconds()        << ' '
+                << t.x() << ' ' << t.y() << ' ' << t.z() << ' '
+                << q.x() << ' ' << q.y() << ' ' << q.z() << ' ' << q.w()
+                << '\n';
+        }
     }
 
     // Build configs from ROS2 parameters

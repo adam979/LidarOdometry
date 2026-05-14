@@ -14,19 +14,26 @@ lidar_odometry_node:
 
     # Downsample to this many points before ICP (0 = no limit)
     # Lower = faster ICP but less accurate. 5000 is a good balance.
-    max_points: 5000
+    max_points: 7500
 
     # ── ICP ───────────────────────────────────────────────────────
     # Maximum number of ICP iterations per scan pair
-    max_iterations: 50
+    max_iterations: 40
 
     # Maximum distance (metres) between matched point pairs
     # Pairs farther than this are rejected as wrong matches
-    max_correspondence_dist: 1.0
+    max_correspondence_dist: 1.25
 
     # Stop iterating when transform change drops below this
     convergence_tolerance: 0.0001
 
     # ── Frames ────────────────────────────────────────────────────
     odom_frame:  "odom"
-    robot_frame: "base_link"
+
+    # ── Trajectory dump (TUM format) ──────────────────────────────
+    # Whether to write the estimated trajectory to a text file
+    dump_estimate: true
+
+    # Output path for the TUM-format trajectory:
+    # cloud_timestamp tx ty tz qx qy qz qw
+    estimate_path: "./estimate.txt"

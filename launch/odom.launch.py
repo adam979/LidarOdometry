@@ -23,13 +23,13 @@ def generate_launch_description():
     )
 
     # Paths
-    pkg_share  = FindPackageShare('lidar_odometry')
+    pkg_share  = FindPackageShare('st196428')
     params_file = PathJoinSubstitution([pkg_share, 'config', 'params.yaml'])
     rviz_config = PathJoinSubstitution([pkg_share, 'config', 'odometry.rviz'])
 
     # Odometry node
     odometry_node = Node(
-        package='lidar_odometry',
+        package='st196428',
         executable='odometry_node',
         name='lidar_odometry_node',
         output='screen',

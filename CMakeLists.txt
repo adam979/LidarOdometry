@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(lidar_odometry)
+project(st196428)
 
 # C++17 required for structured bindings (auto & [si, ti])
 if(NOT CMAKE_CXX_STANDARD)
