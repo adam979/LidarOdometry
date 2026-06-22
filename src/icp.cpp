@@ -20,8 +20,6 @@ const ICPConfig & ICP::getConfig() const
     return config_;
 }
 
-// align function
-
 ICPResult ICP::align(
     const std::vector<Point3D> & source,
     const std::vector<Point3D> & target,

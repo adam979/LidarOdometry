@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
 project(st196428)
 
-# C++17 required for structured bindings (auto & [si, ti])
+# Require C++17
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17)
 endif()
@@ -33,7 +33,7 @@ target_include_directories(lidar_odometry_core PUBLIC
   ${EIGEN3_INCLUDE_DIR}
 )
 
-# ── ROS2 node executable ───────────────────────────────────────────
+# ROS2 node executable
 add_executable(odometry_node
   src/odometry_node.cpp
 )

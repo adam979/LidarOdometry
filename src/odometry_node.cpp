@@ -20,7 +20,6 @@ public:
     OdometryNode()
     : Node("lidar_odometry_node")
     {
-        // Declare all parameters 
         // Preprocessor
         this->declare_parameter("min_range",            0.5);
         this->declare_parameter("max_range",           50.0);
